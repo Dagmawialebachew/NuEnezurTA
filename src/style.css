@@ -1896,6 +1896,10 @@ video {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .stroke-text {
   -webkit-text-stroke: 1px rgba(10, 10, 10, 0.2);
 }

@@ -22,6 +22,7 @@ let lastScroll = 0;
 // Define state outside so it persists across re-initializations
 // PERSISTENT STATE: Define outside to keep audio preference during swiping
 let isGlobalMuted = true;
+let hasInitialized = false; // Prevents double-init
 
 const initHeroSwiper = () => {
     const selectors = {
@@ -317,16 +318,17 @@ const initVaultAnimations = () => {
 
 // 4. DESTINATION INTERACTIONS (MOBILE FRIENDLY)
 const initTourInteractions = () => {
-    const tourRows = document.querySelectorAll('.tour-row');
-    
-    // We removed the "tour-preview" cursor-follow logic 
-    // because we now have visible thumbnails.
-    // Instead, we add a "Magnetic" feel to the thumbnails on desktop.
-    
-    tourRows.forEach(row => {
-        row.addEventListener('click', () => {
-            // Optional: Add logic to open a specific trip modal or link
-            console.log("Tour clicked: " + row.querySelector('h3').innerText);
+    document.querySelectorAll('.tour-row').forEach(row => {
+        row.addEventListener('mousemove', (e) => {
+            const img = row.querySelector('img');
+            if (img) {
+                const rect = row.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width/2;
+                gsap.to(img, { x: x * 0.1, duration: 0.6, ease: "power2.out" });
+            }
+        });
+        row.addEventListener('mouseleave', () => {
+            gsap.to(row.querySelector('img'), { x: 0, duration: 0.6 });
         });
     });
 };
@@ -405,52 +407,61 @@ const initHeroIntro = () => {
 
 // ---
 
-// 6. INITIALIZATION
-// Change this at the bottom of your script
-// This function handles the "Curtain Rise"
 const runGlobalLoader = () => {
+    // 1. Initial State: Kill the CSS pulse & set text start positions
+    gsap.set(UI.loaderBar, { animation: "none", width: "0%", left: "0%" });
+    gsap.set(".loader-text", { y: "110%" }); // Push text down inside their hidden containers
+
     const tl = gsap.timeline({
         onComplete: () => {
-            // After the loader is gone, initialize the scroll-heavy stuff
             initScrollAnimations();
             initVaultAnimations();
-            UI.loader.remove(); // Clean up DOM
+            if (UI.loader) UI.loader.remove();
         }
     });
 
-    tl.to(UI.loaderText, { 
-        y: 0, 
-        duration: 1.2, 
-        stagger: 0.2, 
-        ease: "expo.out" 
+    // 2. The Animation Sequence
+    tl.to(".loader-text", {
+        y: 0,
+        duration: 1.2,
+        stagger: 0.15,
+        ease: "expo.out",
     })
     .to(UI.loaderBar, { 
         width: "100%", 
-        duration: 1.5, 
-        ease: "power2.inOut" 
-    }, "-=0.8")
+        duration: 1.5, // Slightly longer for a "premium" feel
+        ease: "power4.inOut" 
+    }, "-=0.8") // Start bar while text is still finishing
     .to(UI.loader, { 
         yPercent: -100, 
         duration: 1.2, 
         ease: "expo.inOut" 
     }, "+=0.3")
-    // Trigger your existing Hero Intro exactly when the curtain starts lifting
     .add(() => {
         initHeroIntro(); 
     }, "-=1.0");
 };
 
-// 6. MODIFIED INITIALIZATION
+// --- INITIALIZATION WRAPPER ---
 const init = () => {
-    // Immediate background setup (Non-visual)
+    // 1. Strict gate to prevent the function from running twice
+    if (hasInitialized) return; 
+    hasInitialized = true;
+
+    // 2. Setup all site logic
     initInteractivity();
     initHeroSwiper();
     initTourInteractions();
-    
-    // Start the loading sequence
+
+    // 3. Fire the visual reveal
     runGlobalLoader();
 };
 
-// Use 'load' instead of 'DOMContentLoaded' to ensure videos/images are buffered
-window.addEventListener('load', init);
+// 4. Set a safety timeout (forces site to show after 3.5s regardless of speed)
+const forceStart = setTimeout(init, 3500); 
 
+// 5. The ONLY window listener you need
+window.addEventListener('load', () => {
+    clearTimeout(forceStart); // Stop the timeout if the page finishes fast
+    init();                   // Start the reveal
+});
