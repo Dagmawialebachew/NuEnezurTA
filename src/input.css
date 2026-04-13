@@ -1,0 +1,25 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer utilities {
+  .stroke-text {
+    -webkit-text-stroke: 1px rgba(10, 10, 10, 0.2);
+  }
+  
+  .text-clamp-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+  }
+}
+
+/* Custom ScrollReveal Classes */
+.reveal-text {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+body {
+    display:hidden
+}

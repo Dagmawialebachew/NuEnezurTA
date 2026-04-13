@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NU ENEZUR</title>
+    <link rel="stylesheet" href="src/style.css">
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --brand-green: #2d362e;
+            --brand-gold: #c5a059;
+            --brand-cream: #fdfbf7;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--brand-cream);
+            cursor: none; /* Custom 2030 cursor */
+        }
+
+        /* Add this to your style block */
+.hero-stagger {
+    opacity: 0;
+    transform: translateY(30px); /* Matches your GSAP start point */
+}
+
+#hero-card {
+    opacity: 0;
+    transform: translateX(100px);
+}
+
+        /* Update this in your <style> block */
+@media (pointer: fine) {
+    body { 
+        cursor: none; 
+    }
+    #cursor {
+        display: block; /* Show only on desktop */
+    }
+}
+
+@media (pointer: coarse) {
+    body { 
+        cursor: auto; 
+    }
+    #cursor {
+        display: none !important; /* Force hide on mobile */
+    }
+}
+
+        /* 2030 Elite Typography */
+        .text-clamp-huge { font-size: clamp(3rem, 12vw, 9rem); line-height: 0.9; letter-spacing: -0.04em; }
+        .text-clamp-title { font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1.1; letter-spacing: -0.02em; }
+
+        .stroke-text-white {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+    color: transparent;
+}
+        
+        /* The Grid System */
+        /* Text Masking for Reveal Effect */
+
+        .elite-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1px;
+            background-color: rgba(45, 54, 46, 0.1); /* Line color */
+        }
+        @media (min-width: 768px) { .elite-grid { grid-template-columns: repeat(2, 1fr); } }
+        .elite-grid > div { background-color: var(--brand-cream); }
+
+        /* Mix-Blend Logic for Nav */
+        .nav-blend { mix-blend-mode: difference; }
+
+        /* Custom Cursor */
+        #cursor {
+            width: 20px; height: 20px;
+            background: var(--brand-gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+        .nav-link {
+    opacity: 0;
+}
+
+        .grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.04; pointer-events: none; z-index: 90;
+        }
+
+        .nav-link, .nav-secondary-info {
+    opacity: 0; /* Keeps it hidden on page load */
+    will-change: transform, opacity; /* Better performance for 2030-spec hardware */
+}
+
+        .reveal-line { overflow: hidden; }
+
+        .reveal-text {
+    opacity: 0;
+    transform: translateY(30px);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+/* Ensure parallax containers don't leak image edges */
+.parallax-img {
+    will-change: transform;
+}
+    </style>
+</head>
+<body class="antialiased">
+    <div id="cursor" style="opacity: 0;"></div> 
+    <div class="grain"></div>
+
+
+<nav class="fixed w-full z-[100] px-6 py-6 md:px-12 flex justify-between items-center">
+    <div class="flex items-center gap-3 group cursor-pointer">
+        <img src="assets/logo/logo.png" alt="Nu Enezur" class="h-10 md:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110">
+        <div class="hidden sm:block">
+            <span class="text-white font-black text-lg uppercase tracking-tighter block leading-none">Nu Enezur</span>
+            <span class="text-[#c5a059] text-[8px] uppercase tracking-[0.3em] font-bold"></span>
+        </div>
+    </div>
+
+    <div class="hidden lg:flex items-center bg-white/5 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 ml-12">
+        <div class="flex items-center gap-1">
+            <a href="#hero" class="px-6 py-2 bg-[#c5a059] text-white text-[11px] font-extrabold uppercase tracking-widest rounded-full transition-all">Home</a>
+            <a href="#about" class="px-6 py-2 text-white/60 hover:text-white text-[11px] font-extrabold uppercase tracking-widest rounded-full transition-all">About Us</a>
+            <a href="#destinations" class="px-6 py-2 text-white/60 hover:text-white text-[11px] font-extrabold uppercase tracking-widest rounded-full transition-all">Popular</a>
+            <a href="#contact" class="px-6 py-2 text-white/60 hover:text-white text-[11px] font-extrabold uppercase tracking-widest rounded-full transition-all">Contact</a>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <a href="https://wa.me/251911000000" class="hidden md:flex items-center gap-2 bg-white text-[#2d362e] px-6 py-3 rounded-full text-[11px] font-black uppercase tracking-widest hover:bg-[#c5a059] hover:text-white transition-all duration-500 group">
+            Book Now
+            <svg class="w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        </a>
+        
+        <button id="menu-toggle" class="w-12 h-12 flex flex-col items-center justify-center gap-1.5 bg-white/5 backdrop-blur-md border border-white/10 rounded-full hover:bg-white group transition-all duration-500">
+            <div class="w-5 h-[2px] bg-white group-hover:bg-[#2d362e] transition-colors"></div>
+            <div class="w-5 h-[2px] bg-white group-hover:bg-[#2d362e] transition-colors"></div>
+        </button>
+    </div>
+</nav>
+
+<div id="nav-overlay" class="fixed inset-0 bg-[#0A0A0A] z-[110] hidden opacity-0 overflow-hidden">
+    <button id="menu-close" class="absolute top-8 right-8 md:top-12 md:right-12 group flex items-center gap-4 text-white">
+        <span class="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 group-hover:opacity-100 transition-opacity">Close</span>
+        <div class="w-12 h-12 flex items-center justify-center bg-white/5 border border-white/10 rounded-full group-hover:bg-white group-hover:text-black transition-all">✕</div>
+    </button>
+    
+    <div class="h-full container mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 items-center">
+        <div class="lg:col-span-7 flex flex-col gap-4 md:gap-6">
+            <span class="text-[#c5a059] text-[10px] font-black uppercase tracking-[0.6em] mb-4 block opacity-50">Navigation</span>
+            <nav class="flex flex-col items-start gap-2 text-white">
+                <a href="#about" class="nav-link text-white text-5xl md:text-7xl font-black uppercase tracking-tighter hover:text-[#c5a059] transition-all italic">Gallary</a>
+                <a href="#destinations" class="nav-link text-white text-5xl md:text-7xl font-black uppercase tracking-tighter hover:text-[#c5a059] transition-all">Tours</a>
+                <a href="#contact" class="nav-link text-white text-5xl md:text-7xl font-black uppercase tracking-tighter hover:text-[#c5a059] transition-all">Contact Us</a>
+            </nav>
+        </div>
+
+        <div class="hidden lg:flex lg:col-span-5 flex-col gap-12 border-l border-white/10 pl-12">
+            <div>
+                <span class="text-white/30 text-[9px] font-black uppercase tracking-widest block mb-4">Inquiries</span>
+                <p class="text-white text-xl font-bold">hello@nuenezur.com</p>
+                <p class="text-white/60 text-sm mt-2">+251 911 000 000</p>
+            </div>
+            <div>
+                <span class="text-white/30 text-[9px] font-black uppercase tracking-widest block mb-4">Follow Us</span>
+                <div class="flex flex-col gap-3">
+                    <a href="#" class="text-white hover:text-[#c5a059] text-sm uppercase font-bold tracking-widest transition-colors">Instagram</a>
+                    <a href="#" class="text-white hover:text-[#c5a059] text-sm uppercase font-bold tracking-widest transition-colors">Telegram Channel</a>
+                    <a href="#" class="text-white hover:text-[#c5a059] text-sm uppercase font-bold tracking-widest transition-colors">TikTok</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="hero relative min-h-screen w-full flex flex-col justify-center items-start bg-[#0A0A0A] overflow-hidden">
+    <div class="absolute inset-0 z-0 overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1523805009345-7448845a9e53?q=80&w=2072&auto=format&fit=crop" 
+             alt="Ethiopian Landscape" 
+             class="w-full h-full object-cover opacity-50 scale-125" id="hero-bg">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent"></div>
+    </div>
+
+    <div class="relative z-10 px-6 mt-12 md:px-24 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-8">
+            <div class="flex flex-col">
+                <div class="reveal-line mb-2">
+                    <span class="text-[#c5a059] mt-4 font-bold text-sm md:text-sm uppercase tracking-[0.5em] block translate-y-full hero-stagger">Ethiopian Travel Experiences</span>
+                </div>
+                <div class="reveal-line">
+                    <h1 class="text-white text-clamp-huge font-black uppercase leading-[0.85] translate-y-full hero-stagger" id="main-title">
+                        Discover<br>
+                        <span class="text-[#c5a059]">Ethiopia</span>
+                    </h1>
+                </div>
+                <div class="mt-8 max-w-lg reveal-line">
+                    <p class="text-white/60 text-lg md:text-2xl font-light leading-snug translate-y-full hero-stagger">
+                        Explore Ethiopia’s most iconic destinations through guided tours, cultural experiences, and unforgettable adventures. Travel with comfort, safety, and local expertise.
+                    </p>
+                </div>
+                
+                <div class="mt-12 flex flex-wrap items-center gap-8 hero-stagger opacity-0 translate-y-10">
+                    <a href="#destinations" class="px-10 py-5 bg-[#c5a059] text-white font-bold rounded-full text-sm tracking-widest hover:scale-105 hover:bg-white hover:text-black transition-all duration-500 uppercase">View Destinations</a>
+                    
+                    <button class="group flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:border-white transition-all duration-500">
+                            <svg class="w-6 h-6 text-white group-hover:text-black fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <span class="text-white text-xs font-bold uppercase tracking-widest">Watch Travel Stories</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden lg:block lg:col-span-4 relative">
+            <div id="hero-card" class="bg-white/5 backdrop-blur-2xl border border-white/10 p-4 rounded-[2.5rem] translate-x-20 opacity-0 shadow-2xl">
+                
+                <div class="swiper hero-swiper relative aspect-[4/5] rounded-[1.8rem] overflow-hidden mb-8 group">
+                    <div class="swiper-wrapper">
+                        
+                        <div class="swiper-slide relative" data-region="Lalibela, Ethiopia">
+                            <img src="https://images.unsplash.com/photo-1627664819818-e147d6221422?q=80&w=500" class="absolute inset-0 w-full h-full object-cover z-0" alt="Lalibela">
+                            <video muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700 z-10" oncanplay="this.style.opacity='1'">
+                                <source src="assets/video/hero-clip-1.mp4" type="video/mp4">
+                            </video>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-20"></div>
+                            <div class="absolute bottom-6 left-6 right-6 z-30">
+                                <h3 class="text-white text-2xl font-black uppercase tracking-tighter leading-none">Lalibela <br>Rock Churches</h3>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide relative" data-region="Gondar, Ethiopia">
+                            <img src="https://images.unsplash.com/photo-1523810192022-5a0fb9aa7bc8?q=80&w=500" class="absolute inset-0 w-full h-full object-cover z-0" alt="Simien">
+                            <video muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700 z-10" oncanplay="this.style.opacity='1'">
+                                <source src="assets/video/hero-clip-2.mp4" type="video/mp4">
+                            </video>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-20"></div>
+                            <div class="absolute bottom-6 left-6 right-6 z-30">
+                                <p class="text-[#c5a059] text-[10px] font-black uppercase tracking-[0.5em] mb-2">Nature Expedition</p>
+                                <h3 class="text-white text-2xl font-black uppercase tracking-tighter leading-none">Simien <br>Mountains</h3>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <button id="sound-toggle" title="Audio Experience Toggle" class="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group hover:bg-[#c5a059] transition-all duration-500">
+                        <svg id="icon-muted" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                        </svg>
+                        <svg id="icon-unmuted" class="hidden w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                    </button>
+
+                    <div class="absolute bottom-6 right-6 z-40 text-right">
+                        <p class="text-[10px] font-black uppercase tracking-widest mb-2 italic text-white/50">
+                            <span class="curr-idx text-white">01</span>
+                        </p>
+                        <div class="w-12 h-[2px] bg-white/10 ml-auto overflow-hidden">
+                            <div class="swiper-progress-bar h-full bg-[#c5a059] transition-all duration-300" style="width: 25%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-2 pb-2 flex items-center justify-between">
+                    <span class="region-text text-white/40 text-[9px] font-bold uppercase tracking-widest">Ethiopia Travel Highlights</span>
+                    <div class="flex -space-x-2">
+                        <div class="w-6 h-6 rounded-full border-2 border-[#1a1a1a] bg-gray-800"></div>
+                        <div class="w-6 h-6 rounded-full border-2 border-[#1a1a1a] bg-[#c5a059] flex items-center justify-center text-[8px] font-bold text-white">+12</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="relative bg-[#F9F9F9] py-24 md:py-40 overflow-hidden">
+    <div class="absolute top-0 left-0 w-full overflow-hidden opacity-[0.03] select-none pointer-events-none">
+        <h2 class="text-[20vw] font-black uppercase tracking-tighter leading-none -ml-10">EXPLORE</h2>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex flex-col md:flex-row gap-12 md:gap-24 mb-32 md:mb-48">
+            <div class="w-full md:w-1/2 flex flex-col justify-center">
+                <span class="text-[#c5a059] font-black text-xs uppercase tracking-[0.6em] mb-8 block reveal-text">01 / Who We Are</span>
+                <h2 class="text-6xl lg:text-8xl font-black text-[#0A0A0A] mb-10 uppercase tracking-tighter leading-[0.9] reveal-text">
+                    Discover Ethiopia <br><span class="text-[#c5a059]">Beyond</span> Ordinary
+                </h2>
+                <p class="text-[#2d362e]/70 text-xl md:text-2xl leading-relaxed max-w-xl font-medium reveal-text">
+                    Join Nu Enezur and explore Ethiopia’s most incredible destinations. We create unforgettable travel experiences combining culture, adventure, and comfort. Whether you're traveling solo or with a group, we make every journey smooth and memorable.
+                </p>
+            </div>
+            
+            <div class="w-full md:w-1/2 relative group">
+                <div class="absolute -inset-4 border border-[#c5a059]/20 translate-x-8 translate-y-8 transition-transform duration-700 group-hover:translate-x-4 group-hover:translate-y-4"></div>
+                <div class="relative h-[500px] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?q=80&w=2071&auto=format&fit=crop" 
+                         class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100 parallax-img" 
+                         alt="Ethiopian Culture">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col-reverse md:flex-row gap-12 md:gap-24 items-center">
+            <div class="w-full md:w-5/12">
+                <div class="relative h-[600px] overflow-hidden shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1627664819818-e147d6221422?q=80&w=1974&auto=format&fit=crop" 
+                         class="w-full h-full object-cover parallax-img" 
+                         alt="Lalibela Ethiopia">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 to-transparent"></div>
+                    <div class="absolute bottom-10 left-10 text-white">
+                        <p class="text-xs uppercase tracking-[0.4em] font-bold text-[#c5a059] mb-2">Location</p>
+                        <p class="text-2xl font-black uppercase tracking-tighter">Lalibela, Ethiopia</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-7/12 md:pl-12">
+                <span class="text-[#c5a059] font-black text-xs uppercase tracking-[0.6em] mb-12 block reveal-text">02 / Why Travel With Us</span>
+                
+                <div class="space-y-16">
+                    <div class="flex items-start gap-10 group reveal-text">
+                        <span class="text-5xl md:text-7xl font-black text-[#0A0A0A]/05 stroke-text transition-all duration-500 group-hover:text-[#c5a059]/10">01</span>
+                        <div>
+                            <h4 class="text-3xl font-black uppercase text-[#0A0A0A] mb-4 tracking-tight">Professional Guides</h4>
+                            <p class="text-[#2d362e]/60 text-lg leading-snug max-w-md">
+                                We provide experienced local guides who ensure safe, informative, and enjoyable travel experiences through every region of the country.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-10 group reveal-text">
+                        <span class="text-5xl md:text-7xl font-black text-[#0A0A0A]/05 stroke-text transition-all duration-500 group-hover:text-[#c5a059]/10">02</span>
+                        <div>
+                            <h4 class="text-3xl font-black uppercase text-[#0A0A0A] mb-4 tracking-tight">Affordable Packages</h4>
+                            <p class="text-[#2d362e]/60 text-lg leading-snug max-w-md">
+                                Choose from flexible travel packages designed to fit your budget while delivering unforgettable adventures and seamless logistics.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="destinations" class="py-24 md:py-32 bg-[#0A0A0A] text-white">
+    <div class="px-6 md:px-12 mb-16 md:mb-32">
+        <span class="text-[#c5a059] font-black text-xs uppercase tracking-[0.6em] mb-4 block">Popular Destinations</span>
+        <div class="overflow-hidden">
+            <h2 class="text-6xl md:text-clamp-huge font-black uppercase leading-[0.8] reveal-text">Explore</h2>
+        </div>
+        <div class="overflow-hidden">
+            <h2 class="text-6xl md:text-clamp-huge font-black uppercase text-[#c5a059] -mt-2 md:-mt-4 reveal-text">Ethiopia</h2>
+        </div>
+    </div>
+
+    <div class="flex flex-col mb-24 md:mb-40">
+        <div class="tour-row block group border-t border-white/10 py-10 md:py-16 px-6 md:px-12 transition-all duration-500 active:bg-white/5 md:hover:bg-white/5">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+                <div class="flex items-baseline gap-6 md:gap-16">
+                    <span class="text-white/20 font-black text-xl italic">01</span>
+                    <div>
+                        <h3 class="text-3xl lg:text-7xl font-black uppercase tracking-tighter">Lalibela Rock Churches</h3>
+                        <div class="flex flex-wrap gap-3 mt-4">
+                            <span class="px-3 py-1 border border-[#c5a059] text-[#c5a059] rounded-full text-[10px] uppercase font-bold tracking-widest">3 Days Tour</span>
+                            <span class="px-3 py-1 bg-white/10 text-white rounded-full text-[10px] uppercase font-bold tracking-widest">Cultural & Historical</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between md:justify-end gap-8">
+                    <div class="text-left md:text-right">
+                        <p class="text-[#c5a059] uppercase text-[10px] font-bold tracking-[0.3em] mb-1">Recently Completed</p>
+                        <p class="text-lg md:text-2xl font-black italic">Small Group Trip</p>
+                    </div>
+                    <div class="w-20 h-20 md:w-32 md:h-32 rounded-2xl overflow-hidden flex-shrink-0 border border-white/10">
+                        <img src="assets/images/pic-3.jpg" class="w-full h-full object-cover" alt="Lalibela">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tour-row block group border-t border-white/10 py-10 md:py-16 px-6 md:px-12 transition-all duration-500 active:bg-white/5 md:hover:bg-white/5">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+                <div class="flex items-baseline gap-6 md:gap-16">
+                    <span class="text-white/20 font-black text-xl italic">02</span>
+                    <div>
+                        <h3 class="text-3xl lg:text-7xl font-black uppercase tracking-tighter">Danakil Depression</h3>
+                        <div class="flex flex-wrap gap-3 mt-4">
+                            <span class="px-3 py-1 border border-[#c5a059] text-[#c5a059] rounded-full text-[10px] uppercase font-bold tracking-widest">2–3 Days Tour</span>
+                            <span class="px-3 py-1 bg-white/10 text-white rounded-full text-[10px] uppercase font-bold tracking-widest">Adventure & Volcano</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between md:justify-end gap-8">
+                    <div class="text-left md:text-right">
+                        <p class="text-[#c5a059] uppercase text-[10px] font-bold tracking-[0.3em] mb-1">Recently Completed</p>
+                        <p class="text-lg md:text-2xl font-black italic">Group Experience</p>
+                    </div>
+                    <div class="w-20 h-20 md:w-32 md:h-32 rounded-2xl overflow-hidden flex-shrink-0 border border-white/10">
+                        <img src="assets/images/pic-4.jpg" class="w-full h-full object-cover" alt="Danakil">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tour-row block group border-t border-b border-white/10 py-10 md:py-16 px-6 md:px-12 transition-all duration-500 active:bg-white/5 md:hover:bg-white/5">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+                <div class="flex items-baseline gap-6 md:gap-16">
+                    <span class="text-white/20 font-black text-xl italic">03</span>
+                    <div>
+                        <h3 class="text-3xl lg:text-7xl font-black uppercase tracking-tighter">Simien Mountains</h3>
+                        <div class="flex flex-wrap gap-3 mt-4">
+                            <span class="px-3 py-1 border border-[#c5a059] text-[#c5a059] rounded-full text-[10px] uppercase font-bold tracking-widest">4–5 Days Trek</span>
+                            <span class="px-3 py-1 bg-white/10 text-white rounded-full text-[10px] uppercase font-bold tracking-widest">Nature & Hiking</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between md:justify-end gap-8">
+                    <div class="text-left md:text-right">
+                        <p class="text-[#c5a059] uppercase text-[10px] font-bold tracking-[0.3em] mb-1">Recently Completed</p>
+                        <p class="text-lg md:text-2xl font-black italic">Guided Tour</p>
+                    </div>
+                    <div class="w-20 h-20 md:w-32 md:h-32 rounded-2xl overflow-hidden flex-shrink-0 border border-white/10">
+                        <img src="assets/images/pic-2.jpg" class="w-full h-full object-cover" alt="Simien Mountains">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  
+</section>
+
+<div id="tour-preview" class="fixed top-0 left-0 w-[400px] h-[500px] pointer-events-none z-[150] opacity-0 overflow-hidden">
+    <img src="" class="w-full h-full object-cover" id="preview-img">
+</div>
+
+
+<section id="vault" class="py-24 md:py-40 bg-[#FDFBF7] border-y border-[#0A0A0A]/5 overflow-hidden">
+    <div class="container mx-auto px-6">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 md:mb-32 gap-8">
+            <div class="vault-header">
+                <span class="text-[#c5a059] font-black text-xs uppercase tracking-[0.6em] block mb-4 md:mb-6 reveal-item">Recent Travel Experiences</span>
+                <h2 class="text-6xl md:text-9xl font-black uppercase italic tracking-tighter leading-[0.8] text-[#0A0A0A] reveal-item">
+                    Where <br><span class="text-[#c5a059]">We've Been</span>
+                </h2>
+            </div>
+            <div class="max-w-md pb-2 reveal-item">
+                <p class="text-[#0A0A0A]/40 text-sm font-bold uppercase leading-relaxed tracking-widest border-l-2 border-[#c5a059] pl-6">
+                    Explore some of our recent travel experiences across Ethiopia. From mountains to cultural villages, we create unforgettable journeys for our travelers.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+            
+            <a href="#booking" class="vault-card md:col-span-8 group relative overflow-hidden rounded-3xl bg-[#0A0A0A] aspect-[4/5] md:aspect-auto md:min-h-[800px] block shadow-2xl shadow-black/5" data-speed="0.05">
+                <div class="image-wrapper absolute inset-0 w-full h-full">
+                    <img src="assets/images/pic-1.jpg" 
+                         class="vault-img absolute inset-0 w-full h-full object-cover opacity-90 grayscale group-hover:grayscale-0 transition-all duration-1000 ease-out scale-110" 
+                         alt="Simien Mountains">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div class="absolute top-8 left-8 md:top-12 md:left-12 z-20">
+                    <span class="vault-number block text-6xl md:text-9xl font-black italic text-white/10 group-hover:text-white/20 transition-colors duration-700">01</span>
+                </div>
+
+                <div class="absolute bottom-8 left-8 right-8 md:bottom-12 md:left-12 md:right-12 flex justify-between items-end z-20">
+                    <div class="max-w-xl">
+                        <span class="text-[#c5a059] font-black text-[10px] uppercase tracking-[0.5em] mb-3 block">Guided Hiking Adventure</span>
+                        <h3 class="text-3xl md:text-6xl font-black uppercase text-white tracking-tighter leading-none mb-4 group-hover:italic transition-all duration-500">Simien Mountains</h3>
+                        <p class="text-white/60 text-[10px] font-bold uppercase tracking-widest">High Altitude • Small Group • 5 Days</p>
+                    </div>
+                </div>
+            </a>
+
+            <div class="md:col-span-4 flex flex-col gap-6 md:gap-8">
+                
+                <a href="#booking" class="vault-card flex-1 group relative overflow-hidden rounded-3xl bg-[#0A0A0A] min-h-[400px] block shadow-2xl shadow-black/5" data-speed="0.1">
+                    <div class="image-wrapper absolute inset-0 w-full h-full">
+                        <img src="assets/images/pic-2.jpg" 
+                             class="vault-img absolute inset-0 w-full h-full object-cover opacity-80 grayscale group-hover:grayscale-0 transition-all duration-700 scale-110" 
+                             alt="Omo Valley">
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent"></div>
+                    
+                    <div class="relative z-20 h-full p-8 md:p-10 flex flex-col justify-between">
+                        <span class="vault-number text-4xl md:text-5xl font-black italic text-white/10">02</span>
+                        <div>
+                            <span class="text-[#c5a059] text-[10px] font-bold uppercase tracking-widest mb-2 block">Cultural Immersion</span>
+                            <h4 class="text-2xl md:text-3xl font-black uppercase text-white tracking-tight mb-2 group-hover:italic transition-all">Omo Valley</h4>
+                            <div class="flex justify-between items-center">
+                                <p class="text-white/50 text-[9px] font-bold uppercase tracking-widest">Photography Tour</p>
+                                <div class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-[#c5a059] group-hover:border-[#c5a059] transition-all">
+                                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#booking" class="vault-card flex-1 group relative overflow-hidden rounded-3xl bg-[#0A0A0A] min-h-[400px] block shadow-2xl shadow-black/5" data-speed="0.15">
+                    <div class="image-wrapper absolute inset-0 w-full h-full">
+                        <img src="assets/images/pic-3.jpg" 
+                             class="vault-img absolute inset-0 w-full h-full object-cover opacity-80 grayscale group-hover:grayscale-0 transition-all duration-700 scale-110" 
+                             alt="Bale Mountains">
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent"></div>
+                    
+                    <div class="relative z-20 h-full p-8 md:p-10 flex flex-col justify-between">
+                        <span class="vault-number text-4xl md:text-5xl font-black italic text-white/10">03</span>
+                        <div>
+                            <span class="text-[#c5a059] text-[10px] font-bold uppercase tracking-widest mb-2 block">Wildlife & Nature</span>
+                            <h4 class="text-2xl md:text-3xl font-black uppercase text-white tracking-tight mb-2 group-hover:italic transition-all">Bale Mountains</h4>
+                            <div class="flex justify-between items-center">
+                                <p class="text-white/50 text-[9px] font-bold uppercase tracking-widest">Endemic Species • 3 Days</p>
+                                <div class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-[#c5a059] group-hover:border-[#c5a059] transition-all">
+                                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="contact" class="py-32 bg-gradient-to-b from-[#141A16] to-[#0A0A0A] border-t border-white/5 relative overflow-hidden">
+    <div class="absolute bottom-0 right-0 opacity-[0.02] pointer-events-none select-none">
+        <h2 class="text-[30vw] font-black uppercase leading-none -mb-20">NE</h2>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            
+            <div class="lg:col-span-6 reveal-text">
+                <span class="text-[#c5a059] font-black text-xs uppercase tracking-[0.6em] block mb-6">Now Accepting Travel Bookings</span>
+                <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-[0.85] text-white mb-10">
+                    Ready to Explore <br><span class="text-[#c5a059]">Ethiopia?</span>
+                </h2>
+                <p class="text-white/40 text-lg md:text-xl font-bold uppercase tracking-widest max-w-md leading-relaxed">
+                    Contact us to plan your next trip across Ethiopia. We organize cultural tours, adventure trips, and group travel experiences with professional guides and seamless planning.
+                </p>
+
+                <div class="mt-16 grid grid-cols-2 gap-8 border-t border-white/10 pt-10">
+                    <div>
+                        <span class="text-[#c5a059] text-[10px] font-black uppercase tracking-widest block mb-2">Location</span>
+                        <p class="text-white text-sm font-bold uppercase">Addis Ababa, Ethiopia</p>
+                    </div>
+                    <div>
+                        <span class="text-[#c5a059] text-[10px] font-black uppercase tracking-widest block mb-2">Availability</span>
+                        <p class="text-white text-sm font-bold uppercase">Trips Available Year Round</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-6">
+                <div class="bg-[#2D4B37]/10 border border-[#2D4B37]/30 rounded-3xl p-8 md:p-12 backdrop-blur-xl relative overflow-hidden">
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-[#2D4B37]/20 blur-[100px] pointer-events-none"></div>
+                    
+                    <h3 class="text-white text-2xl font-black uppercase tracking-tighter mb-8 italic relative z-10">Contact Our Travel Team</h3>
+                    
+                    <div class="space-y-6 relative z-10">
+                        <a href="https://t.me/yourchannel" class="group flex items-center justify-between p-6 bg-[#0A0A0A]/80 border border-white/5 rounded-2xl hover:border-[#2D4B37] transition-all duration-500">
+                            <div class="flex items-center gap-6">
+                                <div class="w-12 h-12 rounded-full bg-[#2D4B37]/20 flex items-center justify-center text-[#c5a059] group-hover:bg-[#2D4B37] group-hover:text-white transition-all">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.13-.31-1.08-.66.02-.18.27-.36.74-.55 2.91-1.27 4.85-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[#2D4B37] text-[10px] font-black uppercase tracking-widest">Quick Response</p>
+                                    <h4 class="text-white text-lg font-black uppercase">Telegram Inquiry</h4>
+                                </div>
+                            </div>
+                            <svg class="w-6 h-6 text-white/20 group-hover:text-[#c5a059] group-hover:translate-x-2 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+
+                        <a href="https://wa.me/251..." class="group flex items-center justify-between p-6 bg-[#0A0A0A]/80 border border-white/5 rounded-2xl hover:border-[#2D4B37] transition-all duration-500">
+                            <div class="flex items-center gap-6">
+                                <div class="w-12 h-12 rounded-full bg-[#2D4B37]/20 flex items-center justify-center text-[#c5a059] group-hover:bg-[#2D4B37] group-hover:text-white transition-all">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[#2D4B37] text-[10px] font-black uppercase tracking-widest">Book Your Trip</p>
+                                    <h4 class="text-white text-lg font-black uppercase">WhatsApp Chat</h4>
+                                </div>
+                            </div>
+                            <svg class="w-6 h-6 text-white/20 group-hover:text-[#c5a059] group-hover:translate-x-2 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
+
+                    <p class="mt-10 text-[9px] text-white/20 font-bold uppercase tracking-[0.4em] text-center leading-relaxed relative z-10">
+                        We usually respond within a few hours. Contact us to get travel details and available packages.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <footer class="p-12 bg-white flex flex-col md:flex-row justify-between items-center border-t border-gray-100">
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">© 2026 Nu Enezur</p>
+        <div class="flex gap-8 mt-6 md:mt-0">
+            <a href="#" class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#2d362e]">Instagram</a>
+            <a href="#" class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#2d362e]">TikTok</a>
+        </div>
+    </footer>
+    <script src="src/app.js"></script>
+</body>
+</html>
