@@ -620,6 +620,11 @@ video {
   inset: 0px;
 }
 
+.inset-y-0 {
+  top: 0px;
+  bottom: 0px;
+}
+
 .-right-24 {
   right: -6rem;
 }
@@ -929,6 +934,10 @@ video {
   height: 1.5px;
 }
 
+.h-\[1px\] {
+  height: 1px;
+}
+
 .min-h-\[400px\] {
   min-height: 400px;
 }
@@ -987,6 +996,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-0 {
+  width: 0px;
 }
 
 .max-w-lg {
@@ -1647,6 +1660,10 @@ video {
 
 .leading-snug {
   line-height: 1.375;
+}
+
+.leading-tight {
+  line-height: 1.25;
 }
 
 .tracking-\[0\.3em\] {

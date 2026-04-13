@@ -2,6 +2,9 @@
 gsap.registerPlugin(ScrollTrigger);
 
 const UI = {
+    loader: document.getElementById('global-loader'),
+    loaderText: document.querySelectorAll('.loader-text'),
+    loaderBar: document.getElementById('loader-bar'),
     cursor: document.getElementById('cursor'),
     menuBtn: document.getElementById('menu-toggle'),
     closeBtn: document.getElementById('menu-close'),
@@ -380,20 +383,17 @@ const initHeroIntro = () => {
     const introTl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
     introTl
-        // Start with the background slightly zoomed in and dim
         .fromTo(UI.heroBg, 
             { scale: 1.4, filter: "brightness(0)" }, 
             { scale: 1, filter: "brightness(0.5)", duration: 2.5, ease: "power2.out" }
         )
-        // Stagger the text reveal slightly later (the -=2.0 overlap)
         .to(".hero-stagger", { 
             y: 0, 
             opacity: 1, 
-            stagger: 0.2, // Increased from 0.15 for a more "expensive" feel
+            stagger: 0.2, 
             duration: 1.8, 
             ease: "expo.out" 
         }, "-=2.0")
-        // Bring in the card with a very smooth slide
         .to(UI.heroCard, { 
             x: 0, 
             opacity: 1, 
@@ -407,28 +407,50 @@ const initHeroIntro = () => {
 
 // 6. INITIALIZATION
 // Change this at the bottom of your script
-const init = () => {
-    // 1. Setup interactivity and swiper immediately (background tasks)
-    initInteractivity();
-    initHeroSwiper();
-    initScrollAnimations();
-    initTourInteractions();
-    initVaultAnimations();
+// This function handles the "Curtain Rise"
+const runGlobalLoader = () => {
+    const tl = gsap.timeline({
+        onComplete: () => {
+            // After the loader is gone, initialize the scroll-heavy stuff
+            initScrollAnimations();
+            initVaultAnimations();
+            UI.loader.remove(); // Clean up DOM
+        }
+    });
 
-    // 2. TRIGGER THE INTRO WITH A "RENDER BUFFER"
-    // We add a tiny 100ms delay to ensure the browser has painted the initial CSS
-    // and the background image has started rendering.
-    setTimeout(() => {
-        initHeroIntro();
-    }, 150);
-
-    // Event Listeners
-    UI.menuBtn.addEventListener('click', () => toggleMenu(true));
-    UI.closeBtn?.addEventListener('click', () => toggleMenu(false));
-    UI.navLinks.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
+    tl.to(UI.loaderText, { 
+        y: 0, 
+        duration: 1.2, 
+        stagger: 0.2, 
+        ease: "expo.out" 
+    })
+    .to(UI.loaderBar, { 
+        width: "100%", 
+        duration: 1.5, 
+        ease: "power2.inOut" 
+    }, "-=0.8")
+    .to(UI.loader, { 
+        yPercent: -100, 
+        duration: 1.2, 
+        ease: "expo.inOut" 
+    }, "+=0.3")
+    // Trigger your existing Hero Intro exactly when the curtain starts lifting
+    .add(() => {
+        initHeroIntro(); 
+    }, "-=1.0");
 };
 
-// Use DOMContentLoaded instead of window.onload for faster response 
-// then let our internal timeout handle the "feel"
-window.addEventListener('DOMContentLoaded', init);
+// 6. MODIFIED INITIALIZATION
+const init = () => {
+    // Immediate background setup (Non-visual)
+    initInteractivity();
+    initHeroSwiper();
+    initTourInteractions();
+    
+    // Start the loading sequence
+    runGlobalLoader();
+};
+
+// Use 'load' instead of 'DOMContentLoaded' to ensure videos/images are buffered
+window.addEventListener('load', init);
 

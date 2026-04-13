@@ -121,6 +121,22 @@
     <div id="cursor" style="opacity: 0;"></div> 
     <div class="grain"></div>
 
+<div id="global-loader" class="fixed inset-0 z-[100] bg-[#0A0A0A] flex flex-col items-center justify-center overflow-hidden">
+    <div class="relative w-full max-w-xl px-10">
+        <div class="overflow-hidden mb-2">
+            <span class="loader-text block text-[#c5a059] font-bold text-xs uppercase tracking-[0.6em] translate-y-full">Preparing Your Journey</span>
+        </div>
+        <div class="overflow-hidden">
+            <h2 class="loader-text block text-white text-4xl md:text-6xl font-black uppercase leading-tight translate-y-full">
+                Discover <br> <span class="italic font-light">Ethiopia</span>
+            </h2>
+        </div>
+        
+        <div class="mt-12 w-full h-[1px] bg-white/10 relative">
+            <div id="loader-bar" class="absolute inset-y-0 left-0 bg-[#c5a059] w-0"></div>
+        </div>
+    </div>
+</div>
 
 <nav class="fixed w-full z-[100] px-6 py-6 md:px-12 flex justify-between items-center">
     <div class="flex items-center gap-3 group cursor-pointer">
