@@ -30,6 +30,7 @@ const initHeroSwiper = () => {
         swiperContainer: document.querySelector('.hero-swiper'),
         wrapper: document.querySelector('.hero-swiper .swiper-wrapper')
     };
+    
 
     if (!selectors.swiperContainer || !selectors.wrapper) return;
 
